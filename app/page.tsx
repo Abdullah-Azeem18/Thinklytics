@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
-
+// Base API URL for Production and Localhost
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 // Chat History Type
 type SavedChat = {
@@ -238,8 +239,8 @@ export default function Home() {
     resetUI();
     const isYoutube = activeTab === "youtube";
     const apiEndpoint = isYoutube 
-      ? "http://127.0.0.1:8000/api/process-youtube" 
-      : "http://127.0.0.1:8000/api/process-url";
+      ? `${API_BASE_URL}/api/process-youtube` 
+      : `${API_BASE_URL}/api/process-url`;
 
     try {
       const response = await fetch(apiEndpoint, {
@@ -299,7 +300,7 @@ export default function Home() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/process-pdf", {
+      const response = await fetch(`${API_BASE_URL}/api/process-pdf`, {
         method: "POST",
         body: formData,
       });
@@ -333,7 +334,7 @@ export default function Home() {
     await updateChatMessagesInDB(currentChatId, newMessages);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/chat", {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage })
